@@ -76,6 +76,8 @@ namespace pdxpartyparrot.Game.Menu
         {
             if(null != _characterSelectPanel) {
                 Owner.PushPanel(_characterSelectPanel);
+            } else {
+                Debug.Log("TODO: handle OnStart()");
             }
         }
 

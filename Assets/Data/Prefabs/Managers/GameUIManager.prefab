@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3750252248246616362
+--- !u!1 &8712758765333960100
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2282972895132663342}
-  - component: {fileID: 8524540688719892389}
+  - component: {fileID: 1253208705995680096}
+  - component: {fileID: 1255867478865969325}
   m_Layer: 0
-  m_Name: MainMenuState
+  m_Name: GameUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2282972895132663342
+--- !u!4 &1253208705995680096
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3750252248246616362}
+  m_GameObject: {fileID: 8712758765333960100}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,22 +31,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8524540688719892389
+--- !u!114 &1255867478865969325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3750252248246616362}
+  m_GameObject: {fileID: 8712758765333960100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a167069562b40bda28761a5152568d35, type: 3}
+  m_Script: {fileID: 11500000, guid: a7e77b21125ccb24c95c2c9f16a92e25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialSceneName: main_menu
-  _currentSceneName: 
-  _makeInitialSceneActive: 0
-  _enterEffect: {fileID: 0}
-  _exitEffect: {fileID: 0}
-  _menuPrefab: {fileID: 6332146209272971834, guid: 8d3336eb7f1131bf18c0abd5dec173ea, type: 3}
-  _titleScreenPrefab: {fileID: 8777489291081368961, guid: c6f851df357c3b4188912e6b3f7b6b71, type: 3}
+  _gameUIPrefab: {fileID: 5912902703528251769, guid: 950b47d5f43801f779d31b57e82a174e, type: 3}
+  _pauseMenuPrefab: {fileID: 0}
+  _defaultFloatingTextPoolName: floating_text
