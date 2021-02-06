@@ -1,0 +1,17 @@
+{
+    "name": "com.pdxpartyparrot.mlapi",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2ea44629953c04ab5bcb4437d982a5d0",
+        "GUID:5464330f157a3a5dab9d2781d2f3269b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
