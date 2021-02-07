@@ -19,6 +19,8 @@ namespace pdxpartyparrot.Core.Network
     {
         public bool isLocalPlayer => true;
 
+        public bool IsLocalPlayer => isLocalPlayer;
+
         // TODO: find a better value for this
         // (every player should not be player 0)
         public short playerControllerId => 0;
