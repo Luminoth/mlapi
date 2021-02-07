@@ -1,4 +1,5 @@
 using pdxpartyparrot.Game.Loading;
+using pdxpartyparrot.mlapi.Players;
 using pdxpartyparrot.mlapi.UI;
 
 using UnityEngine;
@@ -19,6 +20,9 @@ namespace pdxpartyparrot.mlapi.Loading
         [SerializeField]
         private GameUIManager _gameUiManagerPrefab;
 
+        [SerializeField]
+        private PlayerManager _playerManager;
+
         #endregion
 
         protected override void CreateManagers()
@@ -27,6 +31,7 @@ namespace pdxpartyparrot.mlapi.Loading
 
             GameManager.CreateFromPrefab(_gameManagerPrefab, ManagersContainer);
             GameUIManager.CreateFromPrefab(_gameUiManagerPrefab, ManagersContainer);
+            PlayerManager.CreateFromPrefab(_playerManager, ManagersContainer);
         }
     }
 }
