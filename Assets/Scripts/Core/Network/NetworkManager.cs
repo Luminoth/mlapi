@@ -156,7 +156,10 @@ namespace pdxpartyparrot.Core.Network
             NetworkConfig.ForceSamePrefabs = true;
             NetworkConfig.UsePrefabSync = false;
             NetworkConfig.EnableMessageBuffering = true;
-            NetworkConfig.EnableSceneManagement = true;
+
+            // if MLAPI ever supports additive scene loading,
+            // we could look into supporting this
+            NetworkConfig.EnableSceneManagement = false;
             NetworkConfig.AllowRuntimeSceneChanges = true;
 
             ConnectionApprovalCallback += ApprovalCheckEventHandler;

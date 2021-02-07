@@ -1,5 +1,7 @@
 using System;
 
+using pdxpartyparrot.mlapi.Camera;
+
 using UnityEngine;
 
 namespace pdxpartyparrot.mlapi.Data
@@ -8,5 +10,6 @@ namespace pdxpartyparrot.mlapi.Data
     [Serializable]
     public sealed class GameData : Game.Data.GameData
     {
+        public GameViewer GameViewerPrefab => (GameViewer)ViewerPrefab;
     }
 }

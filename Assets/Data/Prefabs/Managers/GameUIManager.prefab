@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameUIPrefab: {fileID: 5912902703528251769, guid: 950b47d5f43801f779d31b57e82a174e, type: 3}
-  _pauseMenuPrefab: {fileID: 0}
+  _pauseMenuPrefab: {fileID: 8732964313611131709, guid: 4431f10b0082523098362515c0bc95ff, type: 3}
   _defaultFloatingTextPoolName: floating_text

@@ -126,7 +126,7 @@ namespace pdxpartyparrot.Game.Menu
         {
             _debugMenuNode = DebugMenuManager.Instance.AddNode(() => "Menu");
             _debugMenuNode.RenderContentsAction = () => {
-                if(GUIUtils.LayoutButton("Local")) {
+                if(GUIUtils.LayoutButton("Single Player")) {
                     GameStateManager.Instance.StartLocal(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);
                     return;
                 }
@@ -134,12 +134,12 @@ namespace pdxpartyparrot.Game.Menu
 #if USE_NETWORKING || USE_MLAPI
                 GUILayout.BeginVertical("Multiplayer", GUI.skin.box);
                 // TODO: these take in the main game state now
-                if(GUIUtils.LayoutButton("Host")) {
+                if(GUIUtils.LayoutButton("Dedicated Server")) {
                     GameStateManager.Instance.StartHost(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);
                     return;
                 }
 
-                if(GUIUtils.LayoutButton("Join")) {
+                if(GUIUtils.LayoutButton("Join as Client")) {
                     GameStateManager.Instance.StartJoin(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);
                     return;
                 }

@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 5854052464914047482}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -250}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8767477018013474058
 MonoBehaviour:
@@ -54,7 +54,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 7
   m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -517,7 +517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3003665369991126365, guid: 2611b32bf8e5b39708ab257e9feee971, type: 3}
       propertyPath: m_Name
-      value: MenuButton
+      value: Cancel
       objectReference: {fileID: 0}
     - target: {fileID: 3775635559943313093, guid: 2611b32bf8e5b39708ab257e9feee971, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
