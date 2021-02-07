@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace pdxpartyparrot.Game.UI
 {
-    public sealed class NetworkConnectUI : MonoBehaviour
+    public class NetworkConnectUI : MonoBehaviour
     {
         [SerializeField]
         private Canvas _canvas;

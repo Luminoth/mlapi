@@ -17,7 +17,7 @@ MonoBehaviour:
   _viewportSize: 10
   _fov: 60
   _maxLocalPlayers: 1
-  _gamepadsArePlayers: 0
+  _gamepadsArePlayers: 1
   _floatingTextPrefab: {fileID: 8050963335550481004, guid: fd0e8dc3d9ea0c17484628dfe77d9129, type: 3}
   _floatingTextPoolSize: 10
   _mainGameStatePrefab: {fileID: 4850527630132784514, guid: 4bea5bce77b70c6be944305b2450d96e, type: 3}

@@ -45,5 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enterEffect: {fileID: 0}
   _exitEffect: {fileID: 0}
+  _networkConnectUIPrefab: {fileID: 8321795052321942705, guid: defba1c746be9df688b5eb98baace068, type: 3}
   _gameStatePrefab: {fileID: 0}
   _connectType: 0

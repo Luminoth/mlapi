@@ -61,7 +61,7 @@ namespace pdxpartyparrot.Core
                 [SerializeField]
                 private int maxConnections;
 
-                public int MaxConnections => maxConnections < 0 ? 0 : maxConnections;
+                public int MaxConnections => maxConnections <= 0 ? 1 : maxConnections;
             }
 #endif
 

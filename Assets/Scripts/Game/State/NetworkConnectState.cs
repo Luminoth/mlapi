@@ -80,6 +80,9 @@ namespace pdxpartyparrot.Game.State
         {
             base.OnEnter();
 
+            // TODO: OnEnter is called after DoEnter() so the UI
+            // isn't updating the status correctly (it's disabled)
+
 #if USE_NETWORKING || USE_MLAPI
             if(null != GameStateManager.Instance.GameUIManager) {
                 _networkConnectUI = GameStateManager.Instance.GameUIManager.InstantiateUIPrefab(_networkConnectUIPrefab);
@@ -127,7 +130,9 @@ namespace pdxpartyparrot.Game.State
 
                 Core.Network.NetworkManager.Instance.ServerConnectEvent -= ServerConnectEventHandler;
                 Core.Network.NetworkManager.Instance.ClientConnectEvent -= ClientConnectEventHandler;
+#if USE_NETWORKING
                 Core.Network.NetworkManager.Instance.ClientSceneChangedEvent -= ClientSceneChangedEventHandler;
+#endif
             }
 #endif
 
@@ -229,7 +234,9 @@ namespace pdxpartyparrot.Game.State
             Core.Network.NetworkManager.Instance.DiscoverStop();
 #endif
 
+#if USE_NETWORKING
             Core.Network.NetworkManager.Instance.ClientSceneChangedEvent += ClientSceneChangedEventHandler;
+#endif
 
             SetStatus("Connected, waiting for server...");
         }

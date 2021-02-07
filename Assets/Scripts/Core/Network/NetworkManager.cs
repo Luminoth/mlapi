@@ -35,9 +35,13 @@ namespace pdxpartyparrot.Core.Network
     {
         #region Events
 
-#if USE_NETWORKING || USE_MLAPI
+#if USE_NETWORKING
         public event EventHandler<EventArgs> ServerStartEvent;
         public event EventHandler<EventArgs> ServerStopEvent;
+        public event EventHandler<EventArgs> ServerConnectEvent;
+        public event EventHandler<EventArgs> ServerDisconnectEvent;
+#elif USE_MLAPI
+        public event EventHandler<EventArgs> ServerStartEvent;
         public event EventHandler<EventArgs> ServerConnectEvent;
         public event EventHandler<EventArgs> ServerDisconnectEvent;
 #endif
@@ -46,11 +50,14 @@ namespace pdxpartyparrot.Core.Network
         public event EventHandler<EventArgs> ServerChangedSceneEvent;
         public event EventHandler<ServerAddPlayerEventArgs> ServerAddPlayerEvent;
 
-#if USE_NETWORKING || USE_MLAPI
+#if USE_NETWORKING
         public event EventHandler<EventArgs> ClientConnectEvent;
         public event EventHandler<EventArgs> ClientDisconnectEvent;
         public event EventHandler<ClientSceneEventArgs> ClientSceneChangeEvent;
         public event EventHandler<ClientSceneEventArgs> ClientSceneChangedEvent;
+#elif USE_MLAPI
+        public event EventHandler<EventArgs> ClientConnectEvent;
+        public event EventHandler<EventArgs> ClientDisconnectEvent;
 #endif
 
         #endregion
@@ -152,6 +159,11 @@ namespace pdxpartyparrot.Core.Network
             NetworkConfig.EnableMessageBuffering = true;
             NetworkConfig.EnableSceneManagement = true;
             NetworkConfig.AllowRuntimeSceneChanges = true;
+
+            ConnectionApprovalCallback += ApprovalCheckEventHandler;
+            OnServerStarted += ServerStartedEventHandler;
+            OnClientConnectedCallback += ClientConnectedEventHandler;
+            OnClientDisconnectCallback += ClientDisconnectEventHandler;
 #endif
 
             InitDebugMenu();
@@ -665,6 +677,7 @@ namespace pdxpartyparrot.Core.Network
 
         #region Server Callbacks
 
+        // host is started
         public override void OnStartHost()
         {
             CallbackLog("OnStartHost()");
@@ -672,6 +685,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnStartHost();
         }
 
+        // host is stopped
         public override void OnStopHost()
         {
             CallbackLog("OnStopHost()");
@@ -679,6 +693,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnStopHost();
         }
 
+        // server / host is started
         public override void OnStartServer()
         {
             CallbackLog("OnStartServer()");
@@ -688,6 +703,7 @@ namespace pdxpartyparrot.Core.Network
             ServerStartEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        // server / host is stopped
         public override void OnStopServer()
         {
             CallbackLog("OnStopServer()");
@@ -697,6 +713,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnStopServer();
         }
 
+        // server - client connect
         public override void OnServerConnect(NetworkConnection conn)
         {
             CallbackLog($"OnServerConnect({conn})");
@@ -706,6 +723,7 @@ namespace pdxpartyparrot.Core.Network
             ServerConnectEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        // server - client disconnect
         public override void OnServerDisconnect(NetworkConnection conn)
         {
             CallbackLog($"OnServerDisconnect({conn})");
@@ -715,6 +733,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnServerDisconnect(conn);
         }
 
+        // server - client adds player
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
         {
             CallbackLog($"OnServerAddPlayer({conn}, {playerControllerId})");
@@ -724,6 +743,7 @@ namespace pdxpartyparrot.Core.Network
             // NOTE: do not call the base method
         }
 
+        // server - client removes player
         public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
         {
             CallbackLog($"OnServerRemovePlayer({conn}, {player})");
@@ -731,6 +751,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnServerRemovePlayer(conn, player);
         }
 
+        // server - client ready
         public override void OnServerReady(NetworkConnection conn)
         {
             CallbackLog($"OnServerReady({conn})");
@@ -738,6 +759,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnServerReady(conn);
         }
 
+        // server - scene loaded (server initiated)
         public override void OnServerSceneChanged(string sceneName)
         {
             CallbackLog($"OnServerSceneChanged({sceneName})");
@@ -750,6 +772,7 @@ namespace pdxpartyparrot.Core.Network
 
         #region Client Callbacks
 
+        // client is started
         public override void OnStartClient(NetworkClient networkClient)
         {
             CallbackLog($"OnStartClient({networkClient})");
@@ -757,6 +780,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnStartClient(networkClient);
         }
 
+        // client is stopped
         public override void OnStopClient()
         {
             CallbackLog("OnStopClient()");
@@ -764,6 +788,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnStopClient();
         }
 
+        // client - client connect
         public override void OnClientConnect(NetworkConnection conn)
         {
             CallbackLog($"OnClientConnect({conn})");
@@ -773,6 +798,7 @@ namespace pdxpartyparrot.Core.Network
             // NOTE: do not call the base method
         }
 
+        // client - client disconnect
         public override void OnClientDisconnect(NetworkConnection conn)
         {
             CallbackLog($"OnClientDisconnect({conn})");
@@ -782,6 +808,7 @@ namespace pdxpartyparrot.Core.Network
             ClientDisconnectEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        // client - scene loaded (server initiated)
         public override void OnClientSceneChanged(NetworkConnection conn)
         {
             CallbackLog($"OnClientSceneChanged({conn})");
@@ -789,6 +816,7 @@ namespace pdxpartyparrot.Core.Network
             base.OnClientSceneChanged(conn);
         }
 
+        // custom message
         public void OnClientCustomSceneChange(NetworkMessage netMsg)
         {
             CallbackLog($"OnClientCustomSceneChange({netMsg})");
@@ -797,12 +825,67 @@ namespace pdxpartyparrot.Core.Network
             ClientSceneChangeEvent?.Invoke(this, new ClientSceneEventArgs(sceneName));
         }
 
+        // custom message
         public void OnClientCustomSceneChanged(NetworkMessage netMsg)
         {
             CallbackLog($"OnClientCustomSceneChanged({netMsg})");
 
             string sceneName = netMsg.reader.ReadString();
             ClientSceneChangedEvent?.Invoke(this, new ClientSceneEventArgs(sceneName));
+        }
+
+        #endregion
+
+#elif USE_MLAPI
+
+        #region Callbacks
+
+        private void ApprovalCheckEventHandler(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate callback)
+        {
+            CallbackLog($"Approving connection {clientId}");
+
+            // TODO: actually verify the connection
+            bool approve = true;
+
+            callback(false, null, approve, null, null);
+        }
+
+        private void ServerStartedEventHandler()
+        {
+            CallbackLog("Server started");
+
+            ServerStartEvent?.Invoke(this, EventArgs.Empty);
+
+            // for whatever reason, OnClientConnectedCallback isn't invoked when running as a host
+            if(IsHost) {
+                ClientConnectedEventHandler(ServerClientId);
+            }
+        }
+
+        private void ClientConnectedEventHandler(ulong clientId)
+        {
+            CallbackLog($"Client connect {clientId}");
+
+            if(IsServer) {
+                ServerConnectEvent?.Invoke(this, EventArgs.Empty);
+            }
+
+            if(IsClient) {
+                ClientConnectEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void ClientDisconnectEventHandler(ulong clientId)
+        {
+            CallbackLog($"Client disconnect {clientId}");
+
+            if(IsServer) {
+                ServerDisconnectEvent?.Invoke(this, EventArgs.Empty);
+            }
+
+            if(IsClient) {
+                ClientDisconnectEvent?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using pdxpartyparrot.Game.State;
+﻿#if USE_NETWORKING || USE_MLAPI
+using pdxpartyparrot.Game.State;
 
 namespace pdxpartyparrot.Game.Menu
 {
@@ -6,17 +7,19 @@ namespace pdxpartyparrot.Game.Menu
     {
         #region Event Handlers
 
-        // TODO: these methods take in the main game state now
         public void OnHost()
         {
-            //GameStateManager.Instance.StartHost();
+            // TODO: what if we want a different main game state?
+            GameStateManager.Instance.StartHost(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);
         }
 
         public void OnJoin()
         {
-            //GameStateManager.Instance.StartJoin();
+            // TODO: what if we want a different main game state?
+            GameStateManager.Instance.StartJoin(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);
         }
 
         #endregion
     }
 }
+#endif
