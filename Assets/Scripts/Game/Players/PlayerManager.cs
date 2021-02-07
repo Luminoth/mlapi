@@ -230,7 +230,7 @@ namespace pdxpartyparrot.Game.Players
 
             Debug.Log($"Destroying player {player.Id}");
 
-#if !USE_NETWORKING
+#if !USE_NETWORKING && !USE_MLAPI
             Destroy(player.GameObject);
 #endif
 

@@ -380,7 +380,7 @@ namespace pdxpartyparrot.Game.State
             });
         }
 
-#if USE_NETWORKING
+#if USE_NETWORKING || USE_MLAPI
         public void StartHost(MainGameState mainGameStatePrefab, Action<GameState> gameStateInit = null)
         {
             PushSubState(_networkConnectStatePrefab, state => {
@@ -440,6 +440,9 @@ namespace pdxpartyparrot.Game.State
                     GUILayout.Label($"Messages buffered per second: {lastBufferedPerSecond}");
                     GUILayout.EndVertical();
                 }
+#elif USE_MLAPI
+                GUILayout.BeginVertical("TODO: MLAPI Stats", GUI.skin.box);
+                GUILayout.EndVertical();
 #endif
             };
 

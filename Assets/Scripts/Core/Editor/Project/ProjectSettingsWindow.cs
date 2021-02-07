@@ -93,9 +93,11 @@ namespace pdxpartyparrot.Core.Editor.Project
             }
 
             if(_useNetworking.value) {
-                scriptingDefineSymbols.AddSymbol("USE_NETWORKING");
+                //scriptingDefineSymbols.AddSymbol("USE_NETWORKING");
+                scriptingDefineSymbols.AddSymbol("USE_MLAPI");
             } else {
-                scriptingDefineSymbols.RemoveSymbol("USE_NETWORKING");
+                //scriptingDefineSymbols.RemoveSymbol("USE_NETWORKING");
+                scriptingDefineSymbols.RemoveSymbol("USE_MLAPI");
             }
 
             if(_useNavMesh.value) {

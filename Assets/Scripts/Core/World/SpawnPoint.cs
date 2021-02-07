@@ -96,7 +96,7 @@ namespace pdxpartyparrot.Core.World
         [CanBeNull]
         public Actor SpawnFromPrefab(Actor prefab, Guid id, ActorBehaviorComponentData behaviorData, Transform parent = null, bool activate = true)
         {
-#if USE_NETWORKING
+#if USE_NETWORKING || USE_MLAPI
             Debug.LogWarning("You probably meant to use NetworkManager.SpawnNetworkPrefab");
 #endif
 

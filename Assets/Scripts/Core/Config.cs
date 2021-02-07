@@ -12,6 +12,7 @@ namespace pdxpartyparrot.Core
         [Serializable]
         public struct NetworkConfig
         {
+#if USE_NETWORKING
             [Serializable]
             public struct DiscoveryConfig
             {
@@ -25,7 +26,9 @@ namespace pdxpartyparrot.Core
 
                 public int Port => port <= 0 ? 4777 : port;
             }
+#endif
 
+#if USE_NETWORKING || USE_MLAPI
             [Serializable]
             public struct ServerConfig
             {
@@ -35,8 +38,7 @@ namespace pdxpartyparrot.Core
                 // TODO: this should only be true if it's an ip
                 public bool BindIp()
                 {
-                    IPAddress address;
-                    return IPAddress.TryParse(networkAddress, out address);
+                    return IPAddress.TryParse(networkAddress, out _);
                 }
 
                 public string NetworkAddress => networkAddress;
@@ -47,26 +49,43 @@ namespace pdxpartyparrot.Core
                 public int Port => port <= 0 ? 7777 : port;
 
                 [SerializeField]
+                private bool _useWebSockets;
+
+                public bool UseWebSockets => _useWebSockets;
+
+                [SerializeField]
+                private int webSocketPort;
+
+                public int WebSocketPort => webSocketPort <= 0 ? 8887 : webSocketPort;
+
+                [SerializeField]
                 private int maxConnections;
 
                 public int MaxConnections => maxConnections < 0 ? 0 : maxConnections;
             }
+#endif
 
+#if USE_NETWORKING
             [SerializeField]
             private DiscoveryConfig discovery;
 
             public DiscoveryConfig Discovery => discovery;
+#endif
 
+#if USE_NETWORKING || USE_MLAPI
             [SerializeField]
             private ServerConfig server;
 
             public ServerConfig Server => server;
+#endif
         }
 
+#if USE_NETWORKING || USE_MLAPI
         [SerializeField]
         private NetworkConfig network;
 
         public NetworkConfig Network => network;
+#endif
 
         public void Load(string path, string fileName)
         {

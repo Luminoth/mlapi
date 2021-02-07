@@ -22,7 +22,7 @@ namespace pdxpartyparrot.Game.Characters.Players
 
         #region Network
 
-        public override bool IsLocalActor => NetworkPlayer.isLocalPlayer;
+        public override bool IsLocalActor => NetworkPlayer.IsLocalPlayer;
 
         // need this to hand off to the NetworkManager before instantiating
         [SerializeField]

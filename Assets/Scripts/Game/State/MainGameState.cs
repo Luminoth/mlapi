@@ -48,7 +48,7 @@ namespace pdxpartyparrot.Game.State
                 yield return runner.Current;
             }
 
-#if USE_NETWORKING
+#if USE_NETWORKING || USE_MLAPI
             Core.Network.NetworkManager.Instance.ServerDisconnectEvent += ServerDisconnectEventHandler;
             Core.Network.NetworkManager.Instance.ClientDisconnectEvent += ClientDisconnectEventHandler;
 #endif
@@ -69,7 +69,7 @@ namespace pdxpartyparrot.Game.State
         {
             yield return new LoadStatus(0.0f, "Shutting down main game state...");
 
-#if USE_NETWORKING
+#if USE_NETWORKING || USE_MLAPI
             if(Core.Network.NetworkManager.HasInstance) {
                 Core.Network.NetworkManager.Instance.ServerDisconnectEvent -= ServerDisconnectEventHandler;
                 Core.Network.NetworkManager.Instance.ClientDisconnectEvent -= ClientDisconnectEventHandler;
@@ -165,7 +165,11 @@ namespace pdxpartyparrot.Game.State
                 Debug.LogWarning("GameUIManager missing!");
             }
 
+#if USE_MLAPI
+            Core.Network.NetworkManager.Instance.LocalClientReady();
+#else
             Core.Network.NetworkManager.Instance.LocalClientReady(GameStateManager.Instance.NetworkClient?.connection);
+#endif
 
             // TODO: this probably isn't the right place to handle "gamepads are players"
             // instead it probably should be done in whatever initializes the main game state
