@@ -248,8 +248,6 @@ namespace pdxpartyparrot.Game
 
         public virtual void GameOver()
         {
-            Assert.IsFalse(IsGameReady);
-
             Debug.Log("Game Over");
 
             IsGameOver = true;
