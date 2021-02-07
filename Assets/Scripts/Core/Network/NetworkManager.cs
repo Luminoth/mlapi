@@ -43,7 +43,6 @@ namespace pdxpartyparrot.Core.Network
 #elif USE_MLAPI
         public event EventHandler<EventArgs> ServerStartEvent;
         public event EventHandler<EventArgs> ServerConnectEvent;
-        public event EventHandler<EventArgs> ServerDisconnectEvent;
 #endif
 
         public event EventHandler<EventArgs> ServerChangeSceneEvent;
@@ -864,7 +863,7 @@ namespace pdxpartyparrot.Core.Network
 
         private void ClientConnectedEventHandler(ulong clientId)
         {
-            CallbackLog($"Client connect {clientId}");
+            CallbackLog($"Client {clientId} connect");
 
             if(IsServer) {
                 ServerConnectEvent?.Invoke(this, EventArgs.Empty);
@@ -877,15 +876,9 @@ namespace pdxpartyparrot.Core.Network
 
         private void ClientDisconnectEventHandler(ulong clientId)
         {
-            CallbackLog($"Client disconnect {clientId}");
+            CallbackLog($"Client {clientId} disconnect");
 
-            if(IsServer) {
-                ServerDisconnectEvent?.Invoke(this, EventArgs.Empty);
-            }
-
-            if(IsClient) {
-                ClientDisconnectEvent?.Invoke(this, EventArgs.Empty);
-            }
+            ClientDisconnectEvent?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

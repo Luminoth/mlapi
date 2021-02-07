@@ -48,8 +48,10 @@ namespace pdxpartyparrot.Game.State
                 yield return runner.Current;
             }
 
-#if USE_NETWORKING || USE_MLAPI
+#if USE_NETWORKING
             Core.Network.NetworkManager.Instance.ServerDisconnectEvent += ServerDisconnectEventHandler;
+            Core.Network.NetworkManager.Instance.ClientDisconnectEvent += ClientDisconnectEventHandler;
+#elif USE_MLAPI
             Core.Network.NetworkManager.Instance.ClientDisconnectEvent += ClientDisconnectEventHandler;
 #endif
 
@@ -69,11 +71,13 @@ namespace pdxpartyparrot.Game.State
         {
             yield return new LoadStatus(0.0f, "Shutting down main game state...");
 
-#if USE_NETWORKING || USE_MLAPI
+#if USE_NETWORKING
             if(Core.Network.NetworkManager.HasInstance) {
                 Core.Network.NetworkManager.Instance.ServerDisconnectEvent -= ServerDisconnectEventHandler;
                 Core.Network.NetworkManager.Instance.ClientDisconnectEvent -= ClientDisconnectEventHandler;
             }
+#elif USE_MLAPI
+            Core.Network.NetworkManager.Instance.ClientDisconnectEvent -= ClientDisconnectEventHandler;
 #endif
 
             IEnumerator<LoadStatus> runner = ShutdownRoutine();

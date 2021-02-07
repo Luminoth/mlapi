@@ -76,14 +76,10 @@ namespace pdxpartyparrot.Game.State
             GameStateManager.Instance.TransitionToInitialStateAsync();
         }
 
-        public override void OnEnter()
+        protected override void DoEnter()
         {
-            base.OnEnter();
+            base.DoEnter();
 
-            // TODO: OnEnter is called after DoEnter() so the UI
-            // isn't updating the status correctly (it's disabled)
-
-#if USE_NETWORKING || USE_MLAPI
             if(null != GameStateManager.Instance.GameUIManager) {
                 _networkConnectUI = GameStateManager.Instance.GameUIManager.InstantiateUIPrefab(_networkConnectUIPrefab);
                 if(null != _networkConnectUI) {
@@ -92,12 +88,6 @@ namespace pdxpartyparrot.Game.State
             } else {
                 Debug.LogWarning("GameUIManager missing!");
             }
-#endif
-        }
-
-        protected override void DoEnter()
-        {
-            base.DoEnter();
 
             switch(_connectType) {
             case ConnectType.Local:
@@ -130,6 +120,8 @@ namespace pdxpartyparrot.Game.State
 
                 Core.Network.NetworkManager.Instance.ServerConnectEvent -= ServerConnectEventHandler;
                 Core.Network.NetworkManager.Instance.ClientConnectEvent -= ClientConnectEventHandler;
+                Core.Network.NetworkManager.Instance.ClientDisconnectEvent -= ClientDisconnectEventHandler;
+
 #if USE_NETWORKING
                 Core.Network.NetworkManager.Instance.ClientSceneChangedEvent -= ClientSceneChangedEventHandler;
 #endif
@@ -153,7 +145,7 @@ namespace pdxpartyparrot.Game.State
                 SetStatus("Unable to start network host!");
             }
 #else
-
+            // fake the server connection
             ServerConnectEventHandler(this, null);
 #endif
         }
@@ -191,9 +183,16 @@ namespace pdxpartyparrot.Game.State
                 SetStatus("Unable to start network client discovery!");
                 return;
             }
-#endif
 
             SetStatus("Searching for server...");
+#elif USE_MLAPI
+            Core.Network.NetworkManager.Instance.ClientConnectEvent += ClientConnectEventHandler;
+            Core.Network.NetworkManager.Instance.ClientDisconnectEvent += ClientDisconnectEventHandler;
+
+            Core.Network.NetworkManager.Instance.StartClient();
+
+            SetStatus($"Connecting to server...");
+#endif
         }
 #endif
 
@@ -241,6 +240,19 @@ namespace pdxpartyparrot.Game.State
             SetStatus("Connected, waiting for server...");
         }
 
+        private void ClientDisconnectEventHandler(object sender, EventArgs args)
+        {
+            // failed to connect
+            SetStatus("Failed to connect");
+
+            // TODO: disable cancel button, and wait a few seconds
+            // for the player to read the status update before transitioning
+
+            // currently we don't need to shutdown the client here
+            // so just go back to the intial state
+            GameStateManager.Instance.TransitionToInitialStateAsync();
+        }
+
         private void ClientSceneChangedEventHandler(object sender, ClientSceneEventArgs args)
         {
             SetStatus("Server ready, transitioning to game state...");
@@ -248,27 +260,24 @@ namespace pdxpartyparrot.Game.State
             GameStateManager.Instance.TransitionStateAsync(_gameStatePrefab, _gameStateInit);
         }
 
+#if USE_NETWORKING
         private void ReceivedBroadcastEventHandler(object sender, ReceivedBroadcastEventArgs args)
         {
-#if USE_NETWORKING
             Core.Network.NetworkManager.Instance.Discovery.ReceivedBroadcastEvent -= ReceivedBroadcastEventHandler;
             Core.Network.NetworkManager.Instance.DiscoverStop();
-#endif
 
             SetStatus($"Found server at {args.EndPoint}, connecting...");
             Core.Network.NetworkManager.Instance.SetClientConnection(args.EndPoint.Address.ToString(), args.EndPoint.Port);
             Core.Network.NetworkManager.Instance.ClientConnectEvent += ClientConnectEventHandler;
 
-#if USE_MLAPI
-            Core.Network.NetworkManager.Instance.StartClient();
-#else
             GameStateManager.Instance.NetworkClient = Core.Network.NetworkManager.Instance.StartClient();
             if(null == GameStateManager.Instance.NetworkClient) {
                 SetStatus("Unable to start network client!");
                 return;
             }
-#endif
         }
+#endif
+
 #endif
 
         #endregion
