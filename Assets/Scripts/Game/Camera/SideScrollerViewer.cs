@@ -9,8 +9,8 @@ using UnityEngine.Assertions;
 
 namespace pdxpartyparrot.Game.Camera
 {
-    [RequireComponent(typeof(CinemachineFramingTransposer))]
-    [RequireComponent(typeof(CinemachineConfiner))]
+    //[RequireComponent(typeof(CinemachineFramingTransposer))]
+    //[RequireComponent(typeof(CinemachineConfiner))]
     public class SideScrollerViewer : CinemachineViewer, IPlayerViewer
     {
         [Space(10)]
@@ -33,10 +33,10 @@ namespace pdxpartyparrot.Game.Camera
             base.Awake();
 
             _transposer = GetCinemachineComponent<CinemachineFramingTransposer>();
-            Assert.IsNotNull(_transposer);
+            Assert.IsNotNull(_transposer, "Set Body to Framing Transposer");
 
             _confiner = GetComponent<CinemachineConfiner>();
-            Assert.IsNotNull(_confiner);
+            Assert.IsNotNull(_confiner, "Add a Confiner Extension");
         }
 
         #endregion

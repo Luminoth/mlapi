@@ -8,7 +8,6 @@ using UnityEngine.Assertions;
 
 namespace pdxpartyparrot.Game.Camera
 {
-    [RequireComponent(typeof(Cinemachine3rdPersonFollow))]
     public class FollowCamera3D : CinemachineViewer, IPlayerViewer
     {
         public Viewer Viewer => this;
@@ -22,7 +21,7 @@ namespace pdxpartyparrot.Game.Camera
             base.Awake();
 
             _follow = GetCinemachineComponent<Cinemachine3rdPersonFollow>();
-            Assert.IsNotNull(_follow);
+            Assert.IsNotNull(_follow, "Set Body to 3rd Person Follow");
         }
 
         #endregion

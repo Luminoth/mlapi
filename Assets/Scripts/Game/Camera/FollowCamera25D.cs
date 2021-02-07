@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 
 namespace pdxpartyparrot.Game.Camera
 {
-    [RequireComponent(typeof(CinemachineFramingTransposer))]
+    //[RequireComponent(typeof(CinemachineFramingTransposer))]
     public class FollowCamera25D : CinemachineViewer, IPlayerViewer
     {
         public Viewer Viewer => this;
@@ -22,7 +22,7 @@ namespace pdxpartyparrot.Game.Camera
             base.Awake();
 
             _transposer = GetCinemachineComponent<CinemachineFramingTransposer>();
-            Assert.IsNotNull(_transposer);
+            Assert.IsNotNull(_transposer, "Set Body to Framing Transposer");
         }
 
         #endregion
