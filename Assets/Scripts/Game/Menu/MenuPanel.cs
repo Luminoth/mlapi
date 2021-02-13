@@ -28,6 +28,8 @@ namespace pdxpartyparrot.Game.Menu
             set => _initialSelection = value;
         }
 
+        public bool HasInitialSelection => null != _initialSelection;
+
         #region Effects
 
         [SerializeField]
@@ -48,6 +50,8 @@ namespace pdxpartyparrot.Game.Menu
                 _initialSelection.Select();
                 _initialSelection.Highlight();
             }
+
+            // TODO: should we just always warn if we don't have an initial selection?
         }
 
         protected virtual void OnDestroy()

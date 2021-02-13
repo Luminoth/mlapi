@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 
+using JetBrains.Annotations;
+
 using pdxpartyparrot.Core.Effects;
 using pdxpartyparrot.Core.World;
 using pdxpartyparrot.Game.State;
@@ -26,10 +28,28 @@ namespace pdxpartyparrot.Game.Level
         [Space(10)]
 
         [SerializeField]
+        [CanBeNull]
         private EffectTrigger _levelEnterEffect;
 
+        [CanBeNull]
+        protected EffectTrigger LevelEnterEfect => _levelEnterEffect;
+
         [SerializeField]
+        private bool _levelEnterIsBlocking = true;
+
+        protected bool LevelEnterIsBlocking => _levelEnterIsBlocking;
+
+        [SerializeField]
+        [CanBeNull]
         private EffectTrigger _levelExitEffect;
+
+        [CanBeNull]
+        protected EffectTrigger LevelExitEffect => _levelExitEffect;
+
+        [SerializeField]
+        private bool _levelExitIsBlocking = true;
+
+        protected bool LevelExitIsBlocking => _levelExitIsBlocking;
 
 #if USE_NAVMESH
         private NavMeshSurface _navMeshSurface;
@@ -67,6 +87,13 @@ namespace pdxpartyparrot.Game.Level
             }
         }
 
+        protected virtual void Update()
+        {
+            // TODO: if we're in a blocking enter / exit,
+            // based on a flag (can skip or something),
+            // allow exiting out of the blocking trigger early
+        }
+
         #endregion
 
         protected void TransitionLevel()
@@ -76,7 +103,12 @@ namespace pdxpartyparrot.Game.Level
             // load the next level if we have one
             if(!string.IsNullOrWhiteSpace(_nextLevel)) {
                 if(null != _levelExitEffect) {
-                    _levelExitEffect.Trigger(DoLevelTransition);
+                    if(_levelExitIsBlocking) {
+                        _levelExitEffect.Trigger(DoLevelTransition);
+                    } else {
+                        _levelExitEffect.Trigger();
+                        DoLevelTransition();
+                    }
                 } else {
                     DoLevelTransition();
                 }
@@ -129,7 +161,12 @@ namespace pdxpartyparrot.Game.Level
             // TODO: we really should communicate our ready state to the server
             // and then have it communicate back to us when everybody is ready
             if(null != _levelEnterEffect) {
-                _levelEnterEffect.Trigger(GameStateManager.Instance.GameManager.GameReady);
+                if(_levelEnterIsBlocking) {
+                    _levelEnterEffect.Trigger(GameStateManager.Instance.GameManager.GameReady);
+                } else {
+                    _levelEnterEffect.Trigger();
+                    GameStateManager.Instance.GameManager.GameReady();
+                }
             } else {
                 GameStateManager.Instance.GameManager.GameReady();
             }

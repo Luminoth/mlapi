@@ -19,22 +19,24 @@ namespace pdxpartyparrot.Core.Actors.Components
 
         private Transform _transform;
 
+        protected Transform Transform => _transform;
+
         public virtual Vector3 Position
         {
-            get => _transform.position;
+            get => Transform.position;
             set
             {
                 if(ActorManager.Instance.EnableDebug && null != Owner) {
                     Debug.Log($"Teleporting actor {Owner.Id} to {value}");
                 }
-                _transform.position = value;
+                Transform.position = value;
             }
         }
 
         public virtual Quaternion Rotation
         {
-            get => _transform.rotation;
-            set => _transform.rotation = value;
+            get => Transform.rotation;
+            set => Transform.rotation = value;
         }
 
         public virtual Vector3 Velocity
@@ -144,29 +146,29 @@ namespace pdxpartyparrot.Core.Actors.Components
             if(ActorManager.Instance.EnableDebug && null != Owner) {
                 Debug.Log($"Teleporting actor {Owner.Id} to {position}");
             }
-            _transform.position = position;
+            Transform.position = position;
         }
 
         public void Teleport(Transform transform)
         {
             Teleport(transform.position);
-            _transform.rotation = transform.rotation;
+            Transform.rotation = transform.rotation;
         }
 
         public virtual void Move(Vector3 amount)
         {
-            _transform.position = Position + amount;
+            Transform.position = Position + amount;
         }
 
         public virtual void MoveTowards(Vector3 position, float speed, float dt)
         {
             Vector3 newPosition = Vector3.MoveTowards(Position, position, speed * dt);
-            _transform.position = newPosition;
+            Transform.position = newPosition;
         }
 
         public virtual void MoveRotation(Quaternion rot)
         {
-            _transform.rotation = rot;
+            Transform.rotation = rot;
         }
 
         public virtual void AddForce(Vector3 force)

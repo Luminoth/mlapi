@@ -25,6 +25,10 @@ namespace pdxpartyparrot.Game.Menu
         {
             base.Awake();
 
+            if(!HasInitialSelection) {
+                Debug.LogWarning("Pause menu missing initial selection");
+            }
+
             if(null != _settingsMenu) {
                 _settingsMenu.gameObject.SetActive(false);
             }

@@ -3,6 +3,7 @@
 using pdxpartyparrot.Core.Util;
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
@@ -28,6 +29,9 @@ namespace pdxpartyparrot.Core.UI
         private UnityEngine.Camera _camera;
 
         [SerializeField]
+        private float _skipTime = 3.0f;
+
+        [SerializeField]
         [ReadOnly]
         private int _currentSplashScreen;
 
@@ -51,8 +55,18 @@ namespace pdxpartyparrot.Core.UI
             _videoPlayer.errorReceived += ErrorReceivedEventHandler;
         }
 
+        private void Update()
+        {
+            bool skip = Keyboard.current.anyKey.wasPressedThisFrame || Gamepad.current.startButton.wasPressedThisFrame;
+            if(skip && _videoPlayer.isPlaying && _videoPlayer.time > _skipTime) {
+                Debug.Log("Skipping splash screen");
+                Advance();
+            }
+        }
+
         private void OnDestroy()
         {
+            _videoPlayer.errorReceived -= ErrorReceivedEventHandler;
             _videoPlayer = null;
         }
 
@@ -65,6 +79,9 @@ namespace pdxpartyparrot.Core.UI
 
         private void PlayNextSplashScreen()
         {
+            _videoPlayer.prepareCompleted -= PrepareCompletedEventHandler;
+            _videoPlayer.loopPointReached -= LoopPointReachedEventHandler;
+
             if(_currentSplashScreen >= _splashScreens.Length) {
                 Debug.Log($"Loading main scene '{_mainSceneName}'...");
                 SceneManager.LoadScene(_mainSceneName);
@@ -87,6 +104,12 @@ namespace pdxpartyparrot.Core.UI
             _videoPlayer.Prepare();
         }
 
+        private void Advance()
+        {
+            _currentSplashScreen++;
+            PlayNextSplashScreen();
+        }
+
         #region Events
 
         private void ErrorReceivedEventHandler(VideoPlayer source, string message)
@@ -98,7 +121,6 @@ namespace pdxpartyparrot.Core.UI
         {
             source.prepareCompleted -= PrepareCompletedEventHandler;
 
-            // ready, play the clip
             source.loopPointReached += LoopPointReachedEventHandler;
             source.Play();
         }
@@ -107,9 +129,7 @@ namespace pdxpartyparrot.Core.UI
         {
             source.loopPointReached -= LoopPointReachedEventHandler;
 
-            // loop to the next splash
-            _currentSplashScreen++;
-            PlayNextSplashScreen();
+            Advance();
         }
 
         #endregion

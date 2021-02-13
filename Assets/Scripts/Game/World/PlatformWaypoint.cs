@@ -1,16 +1,11 @@
-using pdxpartyparrot.Core.World;
+using System;
 
-using UnityEngine;
+using pdxpartyparrot.Core.World;
 
 namespace pdxpartyparrot.Game.World
 {
+    [Obsolete("Use a normal Waypoint instead")]
     public class PlatformWaypoint : Waypoint
     {
-        public PlatformWaypoint NextPlatformWaypoint => (PlatformWaypoint)NextWaypoint;
-
-        [SerializeField]
-        private float _cooldown;
-
-        public float Cooldown => _cooldown;
     }
 }

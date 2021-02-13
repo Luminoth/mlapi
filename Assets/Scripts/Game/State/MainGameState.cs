@@ -32,6 +32,20 @@ namespace pdxpartyparrot.Game.State
         // this is only used when not using "gamepads are players"
         private readonly List<short> _playerControllers = new List<short>();
 
+        protected override IEnumerator InitSceneRoutine()
+        {
+#if USE_NAVMESH
+            if(null != GameStateManager.Instance.GameManager && null != GameStateManager.Instance.GameManager.LevelHelper) {
+                IEnumerator runner = GameStateManager.Instance.GameManager.LevelHelper.BuildNavMesh();
+                while(runner.MoveNext()) {
+                    yield return null;
+                }
+            }
+#endif
+
+            yield break;
+        }
+
         public override IEnumerator<LoadStatus> OnEnterRoutine()
         {
             yield return new LoadStatus(0.0f, "Entering main game state...");
@@ -114,25 +128,15 @@ namespace pdxpartyparrot.Game.State
 
             DebugMenuManager.Instance.ResetFrameStats();
 
-            yield return new LoadStatus(0.2f, "Initializing main game state...");
+            yield return new LoadStatus(0.25f, "Initializing main game state...");
 
             Assert.IsNotNull(GameStateManager.Instance.GameManager);
             GameStateManager.Instance.GameManager.Initialize();
 
-            yield return new LoadStatus(0.4f, "Initializing main game state (server)...");
+            yield return new LoadStatus(0.5f, "Initializing main game state (server)...");
             InitializeServer();
 
-#if USE_NAVMESH
-            yield return new LoadStatus(0.6f, "Initializing main game state (nav)...");
-            if(null != GameStateManager.Instance.GameManager && null != GameStateManager.Instance.GameManager.LevelHelper) {
-                IEnumerator runner = GameStateManager.Instance.GameManager.LevelHelper.BuildNavMesh();
-                while(runner.MoveNext()) {
-                    yield return new LoadStatus(0.6f, "Initializing main game state (nav)...");
-                }
-            }
-#endif
-
-            yield return new LoadStatus(0.8f, "Initializing main game state (client)...");
+            yield return new LoadStatus(0.75f, "Initializing main game state (client)...");
             InitializeClient();
 
             yield return new LoadStatus(1.0f, "Initializing main game state...");

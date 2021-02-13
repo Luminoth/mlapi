@@ -99,15 +99,28 @@ namespace pdxpartyparrot.Game.State
                 yield return null;
             }
 
+            IEnumerator initrunner = InitSceneRoutine();
+            while(initrunner.MoveNext()) {
+                yield return null;
+            }
+
             yield return null;
             onComplete?.Invoke();
+        }
+
+        protected virtual IEnumerator InitSceneRoutine()
+        {
+            yield break;
         }
 
         public virtual IEnumerator<LoadStatus> OnEnterRoutine()
         {
             Debug.Log($"Enter State: {Name}");
 
-            yield break;
+            IEnumerator runner = InitSceneRoutine();
+            while(runner.MoveNext()) {
+                yield return null;
+            }
         }
 
         public virtual void OnEnter()

@@ -71,6 +71,7 @@ namespace pdxpartyparrot.Game.Characters.NPCs
             velocity = Owner.Movement.Rotation * velocity;
 
             if(Owner.Movement.IsKinematic) {
+                // TODO: teleport is def wrong here given how expensive it is
                 Owner.Movement.Teleport(Owner.Movement.Position + velocity * dt);
             } else {
                 velocity.y = Owner.Movement.Velocity.y;

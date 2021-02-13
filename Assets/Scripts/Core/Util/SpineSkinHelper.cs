@@ -10,6 +10,9 @@ namespace pdxpartyparrot.Core.Util
         [SerializeField]
         private SkeletonAnimation _skeletonAnimation;
 
+        [SerializeField]
+        private string _defaultSkinName = "default";
+
         public SkeletonAnimation SkeletonAnimation
         {
             get => _skeletonAnimation;
@@ -54,7 +57,7 @@ namespace pdxpartyparrot.Core.Util
             get => SkeletonAnimation.Skeleton.Skin.Name;
             set
             {
-                SkeletonAnimation.Skeleton.SetSkin(value);
+                SkeletonAnimation.Skeleton.SetSkin(value ?? _defaultSkinName);
                 SkeletonAnimation.Skeleton.SetSlotsToSetupPose();
                 SkeletonAnimation.AnimationState.Apply(SkeletonAnimation.Skeleton);
             }

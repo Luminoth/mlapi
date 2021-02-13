@@ -62,6 +62,8 @@ namespace pdxpartyparrot.Game.Characters.Players.BehaviorComponents
                 }
             }
 
+            // TODO: this might want to be .Positio = _lastPosition
+            // given how expensive Teleport() is
             Behavior.Owner.Movement.Teleport(_lastPosition);
 
             return true;

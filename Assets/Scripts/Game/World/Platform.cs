@@ -1,24 +1,26 @@
 using pdxpartyparrot.Core;
 using pdxpartyparrot.Core.Time;
 using pdxpartyparrot.Core.Util;
+using pdxpartyparrot.Core.World;
 using pdxpartyparrot.Game.State;
 
 using UnityEngine;
 
 namespace pdxpartyparrot.Game.World
 {
+    // TODO: use a WaypointFollower instead of having this handle that
     [RequireComponent(typeof(Collider))]
     public abstract class Platform : MonoBehaviour
     {
         [SerializeField]
-        private PlatformWaypoint _initialWaypoint;
+        private Waypoint _initialWaypoint;
 
         [SerializeField]
         private float _speed = 5.0f;
 
         [SerializeField]
         [ReadOnly]
-        private PlatformWaypoint _nextWaypoint;
+        private Waypoint _nextWaypoint;
 
         [SerializeReference]
         [ReadOnly]
@@ -61,7 +63,7 @@ namespace pdxpartyparrot.Game.World
                 _cooldown.Start(_nextWaypoint.Cooldown);
 
                 transform.position = _nextWaypoint.transform.position;
-                SetWaypoint(_nextWaypoint.NextPlatformWaypoint);
+                SetWaypoint(_nextWaypoint.NextWaypoint);
             }
         }
 
@@ -77,7 +79,7 @@ namespace pdxpartyparrot.Game.World
 
         #endregion
 
-        private void SetWaypoint(PlatformWaypoint waypoint)
+        private void SetWaypoint(Waypoint waypoint)
         {
             _nextWaypoint = waypoint;
 

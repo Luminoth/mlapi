@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 
 namespace pdxpartyparrot.Game.Camera
 {
+    //[RequireComponent(typeof(Cinemachine3rdPersonFollow))]
     public class FollowCamera3D : CinemachineViewer, IPlayerViewer
     {
         public Viewer Viewer => this;

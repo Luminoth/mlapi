@@ -47,10 +47,10 @@ namespace pdxpartyparrot.Game.World
 
             if(null != _enterEffect) {
                 _enterEffect.Trigger(() => {
-                    _exit.Teleport(other.gameObject);
+                    _exit.Teleport(other.gameObject, this);
                 });
             } else {
-                _exit.Teleport(other.gameObject);
+                _exit.Teleport(other.gameObject, this);
             }
         }
 
@@ -58,18 +58,19 @@ namespace pdxpartyparrot.Game.World
 
         protected abstract bool CanTeleport(GameObject gameObject);
 
-        private void Teleport(GameObject gameObject)
+        private void Teleport(GameObject gameObject, Teleporter source)
         {
             if(null != _exitEffect) {
                 _exitEffect.Trigger(() => {
-                    OnTeleport(gameObject);
+                    OnTeleport(gameObject, source);
                 });
             } else {
-                OnTeleport(gameObject);
+                OnTeleport(gameObject, source);
             }
         }
 
-        protected virtual void OnTeleport(GameObject gameObject)
+        // called on the destination teleporter
+        protected virtual void OnTeleport(GameObject gameObject, Teleporter source)
         {
         }
     }
