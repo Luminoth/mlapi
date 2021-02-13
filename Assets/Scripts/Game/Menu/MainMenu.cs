@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 using pdxpartyparrot.Core.DebugMenu;
 using pdxpartyparrot.Core.UI;
@@ -51,6 +51,10 @@ namespace pdxpartyparrot.Game.Menu
         protected override void Awake()
         {
             base.Awake();
+
+            if(!HasInitialSelection) {
+                Debug.LogWarning("Main menu missing initial selection");
+            }
 
 #if USE_NETWORKING || USE_MLAPI
             if(null != _multiplayerMenu) {
