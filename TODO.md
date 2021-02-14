@@ -4,3 +4,4 @@
 * NetworkConnection can probably go away?
 * short => ulong made a mess of some things
   * also controllerId vs clientId here
+* Remove NetworkDiscovery

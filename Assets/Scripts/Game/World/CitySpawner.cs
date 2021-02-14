@@ -79,8 +79,9 @@ namespace pdxpartyparrot.Game.World
 
             for(; i < _blockPrefabs.Count; ++i) {
                 rnd -= _blockPrefabs[i].frequency;
-                if(rnd < 0.0f)
+                if(rnd < 0.0f) {
                     break;
+                }
             }
 
             return _blockPrefabs[i].prefab;
