@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 0618    // disable obsolete warning for now
 
 using System;
-using System.IO;
 
 using JetBrains.Annotations;
 
@@ -534,7 +533,7 @@ namespace pdxpartyparrot.Core.Network
             networkClient.RegisterHandler(CustomMsgType.SceneChanged, OnClientCustomSceneChanged);
         }
 #elif USE_MLAPI
-        public new SocketTasks StartHost(Vector3? position = null, Quaternion? rotation = null, bool? createPlayerObject = null, ulong? prefabHash = null, Stream payloadStream = null)
+        public new SocketTasks StartHost(Vector3? position = null, Quaternion? rotation = null, bool? createPlayerObject = null, ulong? prefabHash = null, System.IO.Stream payloadStream = null)
         {
             Debug.Log("[NetworkManager]: Starting host");
 

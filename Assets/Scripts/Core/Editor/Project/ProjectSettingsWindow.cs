@@ -77,6 +77,8 @@ namespace pdxpartyparrot.Core.Editor.Project
 
             _useNavMesh = rootVisualElement.Q<Toggle>("toggle-feature-navmesh");
             _useNavMesh.value = manifest.UseNavMesh;
+
+            EnableNetworkingControls(_useNetworking.value);
         }
 
         #endregion
