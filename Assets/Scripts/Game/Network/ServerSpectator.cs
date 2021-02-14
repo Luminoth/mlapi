@@ -1,4 +1,4 @@
-﻿#if ENABLE_SERVER_SPECTATOR && USE_NETWORKING
+﻿#if ENABLE_SERVER_SPECTATOR
 #pragma warning disable 0618    // disable obsolete warning for now
 
 using JetBrains.Annotations;
@@ -11,14 +11,23 @@ using pdxpartyparrot.Game.Camera;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+#if USE_NETWORKING
 using UnityEngine.Networking;
+#elif USE_MLAPI
+using MLAPI;
+#endif
 
 // TODO: need to fix the follow target bits of this
 // TODO: this is probably all kinds of broken with the switch to InputSystem PlayerInput
 
 namespace pdxpartyparrot.Game.Network
 {
+#if USE_NETWORKING
     [RequireComponent(typeof(NetworkIdentity))]
+#elif USE_MLAPI
+    [RequireComponent(typeof(NetworkedObject))]
+#endif
     //[RequireComponent(typeof(FollowCameraTarget3D))]
     public sealed class ServerSpectator : MonoBehaviour
     {
@@ -52,7 +61,7 @@ namespace pdxpartyparrot.Game.Network
         {
             //FollowTarget = GetComponent<FollowCameraTarget3D>();
 
-            _viewer = ViewerManager.Instance.AcquireViewer<ServerSpectatorViewer>(gameObject);
+            _viewer = ViewerManager.Instance.AcquireViewer<ServerSpectatorViewer>();
             if(null != _viewer) {
                 _viewer.Initialize(this);
             }

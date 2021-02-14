@@ -12,7 +12,10 @@ using pdxpartyparrot.Core.Loading;
 using pdxpartyparrot.Core.Network;
 using pdxpartyparrot.Core.UI;
 using pdxpartyparrot.Core.Util;
+#if ENABLE_SERVER_SPECTATOR
 using pdxpartyparrot.Game.Camera;
+using pdxpartyparrot.Game.Network;
+#endif
 using pdxpartyparrot.Game.NPCs;
 using pdxpartyparrot.Game.Players;
 using pdxpartyparrot.Game.UI;

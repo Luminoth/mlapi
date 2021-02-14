@@ -10,6 +10,9 @@ using pdxpartyparrot.Core.Camera;
 using pdxpartyparrot.Core.DebugMenu;
 using pdxpartyparrot.Core.Input;
 using pdxpartyparrot.Core.Loading;
+#if ENABLE_SERVER_SPECTATOR
+using pdxpartyparrot.Game.Network;
+#endif
 
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -151,7 +154,7 @@ namespace pdxpartyparrot.Game.State
             Core.Network.NetworkManager.Instance.ServerChangedScene();
 
 #if ENABLE_SERVER_SPECTATOR
-            if(!NetworkClient.active && !PartyParrotManager.Instance.IsHeadless) {
+            if(!Core.Network.NetworkManager.Instance.IsClientActive() && !PartyParrotManager.Instance.IsHeadless) {
                 ViewerManager.Instance.AllocateViewers(1, GameStateManager.Instance.ServerSpectatorViewerPrefab);
 
                 _serverSpectator = Instantiate(GameStateManager.Instance.ServerSpectatorPrefab);

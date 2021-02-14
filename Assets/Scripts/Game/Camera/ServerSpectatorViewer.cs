@@ -1,4 +1,4 @@
-﻿#if ENABLE_SERVER_SPECTATOR && USE_NETWORKING
+﻿#if ENABLE_SERVER_SPECTATOR
 using pdxpartyparrot.Core.Camera;
 using pdxpartyparrot.Game.Network;
 
