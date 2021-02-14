@@ -5,6 +5,10 @@ using pdxpartyparrot.Core.Actors;
 #if USE_NETWORKING
 using UnityEngine;
 using UnityEngine.Networking;
+#elif USE_MLAPI
+using MLAPI;
+
+using UnityEngine;
 #endif
 
 namespace pdxpartyparrot.Core.Network
@@ -13,6 +17,8 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
     [RequireComponent(typeof(NetworkIdentity))]
     [RequireComponent(typeof(NetworkTransform))]
+#elif USE_MLAPI
+    [RequireComponent(typeof(NetworkedObject))]
 #endif
     public abstract class NetworkActor : NetworkBehaviour
     {
