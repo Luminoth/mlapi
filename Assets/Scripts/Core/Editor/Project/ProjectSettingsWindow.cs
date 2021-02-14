@@ -28,6 +28,7 @@ namespace pdxpartyparrot.Core.Editor.Project
         private Toggle _useSpine;
         private Toggle _useDOTween;
         private Toggle _useNetworking;
+        private Toggle _enableServerSpectator;
         private Toggle _useNavMesh;
 
         #region Unity Lifecycle
@@ -69,12 +70,21 @@ namespace pdxpartyparrot.Core.Editor.Project
 
             _useNetworking = rootVisualElement.Q<Toggle>("toggle-feature-networking");
             _useNetworking.value = manifest.UseNetworking;
+            _useNetworking.RegisterValueChangedCallback(x => EnableNetworkingControls(x.newValue));
+
+            _enableServerSpectator = rootVisualElement.Q<Toggle>("toggle-feature-server-spectator");
+            _enableServerSpectator.value = manifest.EnableServerSpectator;
 
             _useNavMesh = rootVisualElement.Q<Toggle>("toggle-feature-navmesh");
             _useNavMesh.value = manifest.UseNavMesh;
         }
 
         #endregion
+
+        private void EnableNetworkingControls(bool enable)
+        {
+            _enableServerSpectator.SetEnabled(enable);
+        }
 
         private void SetScriptingDefineSymbols(BuildTargetGroup targetGroup)
         {
@@ -98,6 +108,12 @@ namespace pdxpartyparrot.Core.Editor.Project
             } else {
                 //scriptingDefineSymbols.RemoveSymbol("USE_NETWORKING");
                 scriptingDefineSymbols.RemoveSymbol("USE_MLAPI");
+            }
+
+            if(_useNetworking.value && _enableServerSpectator.value) {
+                scriptingDefineSymbols.AddSymbol("ENABLE_SERVER_SPECTATOR");
+            } else {
+                scriptingDefineSymbols.RemoveSymbol("ENABLE_SERVER_SPECTATOR");
             }
 
             if(_useNavMesh.value) {
@@ -131,6 +147,9 @@ namespace pdxpartyparrot.Core.Editor.Project
 
             refreshAssetDatabase |= manifest.UseNetworking != _useNetworking.value;
             manifest.UseNetworking = _useNetworking.value;
+
+            refreshAssetDatabase |= manifest.EnableServerSpectator != _enableServerSpectator.value;
+            manifest.EnableServerSpectator = _enableServerSpectator.value;
 
             refreshAssetDatabase |= manifest.UseNavMesh != _useNavMesh.value;
             manifest.UseNavMesh = _useNavMesh.value;

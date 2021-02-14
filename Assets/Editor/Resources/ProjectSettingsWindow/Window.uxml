@@ -14,6 +14,7 @@
             <Toggle label="Spine" name="toggle-feature-spine" />
             <Toggle label="DOTween" name="toggle-feature-dotween" />
             <Toggle label="Networking" name="toggle-feature-networking" />
+            <Toggle label="Server Spectator" name="toggle-feature-server-spectator" />
             <Toggle label="NavMesh" name="toggle-feature-navmesh" />
         </VisualElement>
     </VisualElement>

@@ -47,6 +47,15 @@ namespace pdxpartyparrot.Core.Editor.Project
         }
 
         [SerializeField]
+        private bool _enableServerSpectator;
+
+        public bool EnableServerSpectator
+        {
+            get => _enableServerSpectator;
+            set => _enableServerSpectator = value;
+        }
+
+        [SerializeField]
         private bool _useNavMesh;
 
         public bool UseNavMesh
