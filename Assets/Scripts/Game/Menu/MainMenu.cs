@@ -128,7 +128,7 @@ namespace pdxpartyparrot.Game.Menu
 
         private void InitDebugMenu()
         {
-            _debugMenuNode = DebugMenuManager.Instance.AddNode(() => "Menu");
+            _debugMenuNode = DebugMenuManager.Instance.AddNode(() => "Menu", 99);
             _debugMenuNode.RenderContentsAction = () => {
                 if(GUIUtils.LayoutButton("Single Player")) {
                     GameStateManager.Instance.StartLocal(GameStateManager.Instance.GameManager.GameData.MainGameStatePrefab);

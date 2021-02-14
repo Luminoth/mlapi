@@ -180,10 +180,11 @@ namespace pdxpartyparrot.Core.DebugMenu
 
         #endregion
 
-        public DebugMenuNode AddNode(Func<string> title)
+        public DebugMenuNode AddNode(Func<string> title, int priority = 0)
         {
-            DebugMenuNode node = new DebugMenuNode(title);
+            DebugMenuNode node = new DebugMenuNode(title, priority);
             _nodes.Add(node);
+            _nodes.Sort();
             return node;
         }
 
@@ -318,7 +319,7 @@ namespace pdxpartyparrot.Core.DebugMenu
 
         private void InitLogMessageDebugNode()
         {
-            DebugMenuNode debugMenuNode = AddNode(() => "Logs");
+            DebugMenuNode debugMenuNode = AddNode(() => "Logs", 100);
             debugMenuNode.RenderContentsAction = () => {
 #if USE_LOG_MESSAGE_BUFFER
                 GUIStyle style = GUI.skin.textArea;
