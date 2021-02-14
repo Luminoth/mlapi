@@ -90,7 +90,7 @@ namespace pdxpartyparrot.Core.Input
         }
 
         [CanBeNull]
-        public Gamepad GetGamepad(short playerControllerId)
+        public Gamepad GetGamepad(int playerControllerId)
         {
             int gamepadCount = GetGamepadCount();
             if(playerControllerId >= gamepadCount) {

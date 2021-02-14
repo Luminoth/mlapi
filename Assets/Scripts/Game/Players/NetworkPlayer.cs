@@ -25,9 +25,9 @@ namespace pdxpartyparrot.Game.Players
 
         [SerializeField]
         [ReadOnly]
-        private short _controllerId;
+        private int _controllerId;
 
-        public short ControllerId => _controllerId;
+        public int ControllerId => _controllerId;
 
         #region Unity Lifecycle
 
@@ -40,7 +40,7 @@ namespace pdxpartyparrot.Game.Players
 
         #endregion
 
-        public void Initialize(short controllerId)
+        public void Initialize(int controllerId)
         {
             _controllerId = controllerId;
         }

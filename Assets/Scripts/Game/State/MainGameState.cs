@@ -30,7 +30,7 @@ namespace pdxpartyparrot.Game.State
 #endif
 
         // this is only used when not using "gamepads are players"
-        private readonly List<short> _playerControllers = new List<short>();
+        private readonly List<int> _playerControllers = new List<int>();
 
         protected override IEnumerator InitSceneRoutine()
         {
@@ -189,7 +189,7 @@ namespace pdxpartyparrot.Game.State
                     Debug.Log($"Will spawn a player for each controller ({count})...");
                 }
 
-                for(short i = 0; i < count; ++i) {
+                for(int i = 0; i < count; ++i) {
                     Core.Network.NetworkManager.Instance.AddLocalPlayer(i);
                 }
             } else {
@@ -197,7 +197,7 @@ namespace pdxpartyparrot.Game.State
                     Debug.LogWarning("No player controllers available!");
                 }
 
-                foreach(short playerControllerId in _playerControllers) {
+                foreach(int playerControllerId in _playerControllers) {
                     Debug.Log($"Spawning local player with controller {playerControllerId}...");
                     Core.Network.NetworkManager.Instance.AddLocalPlayer(playerControllerId);
                 }
@@ -264,7 +264,7 @@ namespace pdxpartyparrot.Game.State
         #endregion
 
         // this is only used when not "gamepads are players"
-        public bool AddPlayerController(short playerControllerId)
+        public bool AddPlayerController(int playerControllerId)
         {
             if(!Core.Network.NetworkManager.Instance.IsClientActive()) {
                 return false;

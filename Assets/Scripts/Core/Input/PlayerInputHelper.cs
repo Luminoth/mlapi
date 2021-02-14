@@ -38,7 +38,7 @@ namespace pdxpartyparrot.Core.Input
 
         #endregion
 
-        public void Initialize(short playerControllerId)
+        public void Initialize(int playerControllerId)
         {
             // TODO: we shouldn't blindly assume we want gamepads here
 

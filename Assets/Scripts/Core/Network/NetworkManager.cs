@@ -15,6 +15,7 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 #elif USE_MLAPI
 using MLAPI;
+using MLAPI.Configuration;
 using MLAPI.Transports.Tasks;
 using MLAPI.Transports.UNET;
 #endif
@@ -211,16 +212,19 @@ namespace pdxpartyparrot.Core.Network
         #region Network Prefabs
 
 #if USE_MLAPI
-        public void RegisterNetworkPrefab<T>(T networkPrefab) where T : NetworkedBehaviour
+        public void RegisterNetworkPrefab<T>(T networkPrefab, bool isPlayer = false) where T : NetworkedBehaviour
 #else
-        public void RegisterNetworkPrefab<T>(T networkPrefab) where T : NetworkBehaviour
+        public void RegisterNetworkPrefab<T>(T networkPrefab, bool isPlayer = false) where T : NetworkBehaviour
 #endif
         {
             Debug.Log($"[NetworkManager]: Registering network prefab '{networkPrefab.name}'");
 #if USE_NETWORKING
             ClientScene.RegisterPrefab(networkPrefab.gameObject);
 #elif USE_MLAPI
-            Debug.LogWarning($"TODO: register network prefab {networkPrefab.name}");
+            NetworkConfig.NetworkedPrefabs.Add(new NetworkedPrefab {
+                Prefab = networkPrefab.gameObject,
+                PlayerPrefab = isPlayer,
+            });
 #else
             Debug.LogWarning($"[NetworkManager]: Not registering network prefab {networkPrefab.name}");
 #endif
@@ -236,7 +240,7 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
             ClientScene.UnregisterPrefab(networkPrefab.gameObject);
 #elif USE_MLAPI
-            Debug.LogWarning($"TODO: unregister network prefab {networkPrefab.name}");
+            NetworkConfig.NetworkedPrefabs.RemoveAll(x => x.Prefab == networkPrefab);
 #else
             Debug.LogWarning($"[NetworkManager]: Not unregistering network prefab {networkPrefab.name}");
 #endif
@@ -290,7 +294,7 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
             NetworkServer.Spawn(networkObject.gameObject);
 #elif USE_MLAPI
-            Debug.LogWarning($"TODO: spawn network object {networkObject.name}");
+            networkObject.NetworkedObject.Spawn();
 #else
             Debug.LogWarning($"[NetworkManager]: Not spawning network object {networkObject.name}");
 #endif
@@ -305,7 +309,7 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
             NetworkServer.UnSpawn(networkObject.gameObject);
 #elif USE_MLAPI
-            Debug.LogWarning($"TODO: despawn network object {networkObject.name}");
+            networkObject.NetworkedObject.UnSpawn();
 #else
             Debug.LogWarning($"[NetworkManager]: Not despawning network object {networkObject.name}");
 #endif
@@ -348,7 +352,7 @@ namespace pdxpartyparrot.Core.Network
             // TODO: warn if already set?
             playerPrefab = prefab.gameObject;
 #if USE_NETWORKING || USE_MLAPI
-            RegisterNetworkPrefab(prefab);
+            RegisterNetworkPrefab(prefab, true);
 #endif
         }
 
@@ -367,7 +371,7 @@ namespace pdxpartyparrot.Core.Network
             playerPrefab = null;
         }
 
-        public T SpawnPlayer<T>(short controllerId, NetworkConnection conn) where T : NetworkActor
+        public T SpawnPlayer<T>(int controllerId, NetworkConnection conn) where T : NetworkActor
         {
             if(!IsServerActive()) {
                 Debug.LogWarning("[NetworkManager]: Cannot spawn player prefab without an active server!");
@@ -388,14 +392,15 @@ namespace pdxpartyparrot.Core.Network
 
             // call this instead of NetworkServer.Spawn()
 #if USE_NETWORKING
-            NetworkServer.AddPlayerForConnection(conn, player.gameObject, controllerId);
+            NetworkServer.AddPlayerForConnection(conn, player, controllerId);
 #elif USE_MLAPI
-            Debug.LogWarning($"TODO: spawn player {controllerId}");
+            NetworkedObject no = player.GetComponent<NetworkedObject>();
+            no.SpawnAsPlayerObject(conn.ClientId);
 #endif
             return player.GetComponent<T>();
         }
 
-        public T SpawnPlayer<T>(short controllerId, NetworkConnection conn, Transform parent) where T : NetworkActor
+        public T SpawnPlayer<T>(int controllerId, NetworkConnection conn, Transform parent) where T : NetworkActor
         {
             T player = SpawnPlayer<T>(controllerId, conn);
             if(null == player) {
@@ -564,6 +569,13 @@ namespace pdxpartyparrot.Core.Network
             Debug.Log($"[NetworkManager]: Connecting client to {transport.ConnectAddress}:{transport.ConnectPort}");
             return base.StartClient();
         }
+
+        public SocketTasks StartClient(byte[] connectionData)
+        {
+            NetworkConfig.ConnectionData = connectionData;
+
+            return StartClient();
+        }
 #else
         public NetworkClient StartHost()
         {
@@ -583,7 +595,7 @@ namespace pdxpartyparrot.Core.Network
         {
         }
 
-        public NetworkClient StartClient()
+        public NetworkClient StartClient(byte[] connectionData = null)
         {
             return new NetworkClient();
         }
@@ -619,20 +631,20 @@ namespace pdxpartyparrot.Core.Network
 
             ClientScene.Ready(conn);
 #elif MLAPI
-            Debug.Log($"TODO: local client ready");
+            Debug.LogWarning($"TODO: local client ready");
 #endif
         }
 
-        public void AddLocalPlayer(short playerControllerId)
+        public void AddLocalPlayer(int playerControllerId)
         {
             Debug.Log($"[NetworkManager]: Adding local player {playerControllerId}!");
 
 #if USE_NETWORKING
             ClientScene.AddPlayer(playerControllerId);
 #elif MLAPI
-            Debug.Log($"TODO: add local player {playerControllerId}");
+            Debug.LogWarning($"TODO: add local player {playerControllerId}");
 #else
-            ServerAddPlayerEvent?.Invoke(this, new ServerAddPlayerEventArgs(new NetworkConnection(), playerControllerId));
+            ServerAddPlayerEvent?.Invoke(this, new ServerAddPlayerEventArgs(new NetworkConnection((ulong)playerControllerId), playerControllerId));
 #endif
         }
 
@@ -648,7 +660,7 @@ namespace pdxpartyparrot.Core.Network
             NetworkServer.SetAllClientsNotReady();
             networkSceneName = sceneName;
 #elif MLAPI
-            Debug.Log($"TODO: server change scene");
+            Debug.LogWarning($"TODO: server change scene");
 #endif
 
             ServerChangeSceneEvent?.Invoke(this, EventArgs.Empty);
@@ -671,7 +683,7 @@ namespace pdxpartyparrot.Core.Network
             NetworkServer.SpawnObjects();
             OnServerSceneChanged(networkSceneName);
 #elif MLAPI
-            Debug.Log($"TODO: server changed scene");
+            Debug.LogWarning($"TODO: server changed scene");
 #endif
         }
 

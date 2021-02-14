@@ -113,11 +113,11 @@ namespace pdxpartyparrot.Game.Players
 
         #endregion
 
-        private void SpawnPlayer(NetworkConnection conn, short controllerId)
+        private void SpawnPlayer(NetworkConnection conn, int controllerId)
         {
             Assert.IsTrue(NetworkManager.Instance.IsServerActive());
 
-            Debug.Log($"Spawning player for controller {controllerId}...");
+            Debug.Log($"Spawning player {conn.ClientId} for controller {controllerId}...");
 
             SpawnPoint spawnPoint = SpawnManager.Instance.GetPlayerSpawnPoint(controllerId);
             if(null == spawnPoint) {

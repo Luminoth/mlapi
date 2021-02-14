@@ -104,7 +104,7 @@ namespace pdxpartyparrot.Game.Players.Input
 
         #endregion
 
-        public virtual void Initialize(short playerControllerId)
+        public virtual void Initialize(int playerControllerId)
         {
             if(!Player.IsLocalActor) {
                 return;

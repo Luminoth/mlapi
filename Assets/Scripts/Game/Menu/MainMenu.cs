@@ -98,7 +98,7 @@ namespace pdxpartyparrot.Game.Menu
             if(null != _characterSelectPanel) {
                 Owner.PushPanel(_characterSelectPanel);
             } else {
-                Debug.Log("TODO: override MainMenu and handle OnStart()!");
+                Debug.LogWarning("TODO: override MainMenu and handle OnStart()!");
             }
         }
 

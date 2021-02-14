@@ -12,9 +12,9 @@ namespace pdxpartyparrot.Core.Network
     {
         public NetworkConnection NetworkConnection { get; }
 
-        public short PlayerControllerId { get; }
+        public int PlayerControllerId { get; }
 
-        public ServerAddPlayerEventArgs(NetworkConnection conn, short playerControllerId)
+        public ServerAddPlayerEventArgs(NetworkConnection conn, int playerControllerId)
         {
             NetworkConnection = conn;
             PlayerControllerId = playerControllerId;
