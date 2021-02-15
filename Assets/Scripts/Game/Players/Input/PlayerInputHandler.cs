@@ -30,6 +30,7 @@ namespace pdxpartyparrot.Game.Players.Input
 
         public PlayerInputData PlayerInputData => _data;
 
+        // TODO: this isn't used anywhere
         [SerializeField]
         private float _mouseSensitivity = 0.5f;
 
@@ -65,6 +66,7 @@ namespace pdxpartyparrot.Game.Players.Input
         [ReadOnly]
         private bool _inputEnabled;
 
+        // TODO: this isn't used anywhere
         protected bool EnableMouseLook { get; private set; } = !Application.isEditor;
 
         public PlayerInputHelper InputHelper { get; private set; }

@@ -6,6 +6,7 @@ using pdxpartyparrot.Game.Network;
 
 using UnityEngine.Assertions;
 
+// TODO: move to Core.Network
 namespace pdxpartyparrot.Game.Camera
 {
     //[RequireComponent(typeof(Cinemachine3rdPersonFollow))]
