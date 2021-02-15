@@ -43,7 +43,7 @@ namespace pdxpartyparrot.Game.Camera
 
         public virtual void Initialize(GameData gameData)
         {
-            Viewer.Set2D(gameData.ViewportSize);
+            Set2D(gameData.ViewportSize);
             _confiner.m_ConfineScreenEdges = true;
 
             _transposer.m_GroupFramingMode = CinemachineFramingTransposer.FramingMode.HorizontalAndVertical;

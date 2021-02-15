@@ -136,11 +136,15 @@ namespace pdxpartyparrot.Game.State
             Assert.IsNotNull(GameStateManager.Instance.GameManager);
             GameStateManager.Instance.GameManager.Initialize();
 
-            yield return new LoadStatus(0.5f, "Initializing main game state (server)...");
-            InitializeServer();
+            if(Core.Network.NetworkManager.Instance.IsServerActive()) {
+                yield return new LoadStatus(0.5f, "Initializing main game state (server)...");
+                InitializeServer();
+            }
 
-            yield return new LoadStatus(0.75f, "Initializing main game state (client)...");
-            InitializeClient();
+            if(Core.Network.NetworkManager.Instance.IsClientActive()) {
+                yield return new LoadStatus(0.75f, "Initializing main game state (client)...");
+                InitializeClient();
+            }
 
             yield return new LoadStatus(1.0f, "Initializing main game state...");
         }

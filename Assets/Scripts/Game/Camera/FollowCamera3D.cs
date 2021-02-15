@@ -29,7 +29,7 @@ namespace pdxpartyparrot.Game.Camera
 
         public virtual void Initialize(GameData gameData)
         {
-            Viewer.Set3D(gameData.FoV);
+            Set3D(gameData.FoV);
         }
 
         public void FollowTarget(GameObject target)

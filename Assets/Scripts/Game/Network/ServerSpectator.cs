@@ -18,8 +18,7 @@ using UnityEngine.Networking;
 using MLAPI;
 #endif
 
-// TODO: need to fix the follow target bits of this
-// TODO: this is probably all kinds of broken with the switch to InputSystem PlayerInput
+// TODO: fix input
 
 namespace pdxpartyparrot.Game.Network
 {
@@ -28,7 +27,6 @@ namespace pdxpartyparrot.Game.Network
 #elif USE_MLAPI
     [RequireComponent(typeof(NetworkedObject))]
 #endif
-    //[RequireComponent(typeof(FollowCameraTarget3D))]
     public sealed class ServerSpectator : MonoBehaviour
     {
         private const string InvertLookYKey = "serverspectator.invertlooky";
@@ -50,8 +48,6 @@ namespace pdxpartyparrot.Game.Network
         [ReadOnly]
         private Vector3 _lastControllerLook;
 
-        //public FollowCameraTarget3D FollowTarget { get; private set; }
-
         [CanBeNull]
         private ServerSpectatorViewer _viewer;
 
@@ -59,12 +55,7 @@ namespace pdxpartyparrot.Game.Network
 
         private void Awake()
         {
-            //FollowTarget = GetComponent<FollowCameraTarget3D>();
-
-            _viewer = ViewerManager.Instance.AcquireViewer<ServerSpectatorViewer>();
-            if(null != _viewer) {
-                _viewer.Initialize(this);
-            }
+            InitViewer();
         }
 
         private void OnDestroy()
@@ -79,13 +70,21 @@ namespace pdxpartyparrot.Game.Network
         {
             float dt = Time.deltaTime;
 
-            //FollowTarget.LastLookAxes = Vector3.Lerp(FollowTarget.LastLookAxes, _lastControllerLook, dt * 20.0f);
-
             Quaternion rotation = null != _viewer ? Quaternion.AngleAxis(_viewer.transform.localEulerAngles.y, Vector3.up) : transform.rotation;
             transform.position = Vector3.Lerp(transform.position, transform.position + (rotation * _lastControllerMove), dt * 20.0f);
         }
 
         #endregion
+
+        private void InitViewer()
+        {
+            _viewer = ViewerManager.Instance.AcquireViewer<ServerSpectatorViewer>();
+            if(null == _viewer) {
+                Debug.LogWarning("Unable to acquire server spectator viewer!");
+                return;
+            }
+            _viewer.Initialize(this);
+        }
 
         private bool IsInputAllowed(InputAction.CallbackContext ctx)
         {

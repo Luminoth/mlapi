@@ -48,3 +48,5 @@ MonoBehaviour:
   _sceneTesterStatePrefab: {fileID: 3873887561617200911, guid: 43bc68875182188158f3893774a358a4, type: 3}
   _currentGameState: {fileID: 0}
   _currentSubGameState: {fileID: 0}
+  _serverSpectatorPrefab: {fileID: 7622693986035504856, guid: 6db16a4d4f1f9af429c7a3b4cf162485, type: 3}
+  _serverSpectatorViewerPrefab: {fileID: 7210605824443128396, guid: dc87a218679303444a20ef3b671ead90, type: 3}
