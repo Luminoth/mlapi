@@ -49,14 +49,11 @@ namespace pdxpartyparrot.Core.Network
         public event EventHandler<EventArgs> ServerChangedSceneEvent;
         public event EventHandler<ServerAddPlayerEventArgs> ServerAddPlayerEvent;
 
-#if USE_NETWORKING
+#if USE_NETWORKING || USE_MLAPI
         public event EventHandler<EventArgs> ClientConnectEvent;
         public event EventHandler<EventArgs> ClientDisconnectEvent;
         public event EventHandler<ClientSceneEventArgs> ClientSceneChangeEvent;
         public event EventHandler<ClientSceneEventArgs> ClientSceneChangedEvent;
-#elif USE_MLAPI
-        public event EventHandler<EventArgs> ClientConnectEvent;
-        public event EventHandler<EventArgs> ClientDisconnectEvent;
 #endif
 
         #endregion
@@ -100,8 +97,10 @@ namespace pdxpartyparrot.Core.Network
 #else
         [SerializeField]
         [ReadOnly]
+        [CanBeNull]
         private GameObject m_PlayerPrefab;
 
+        [CanBeNull]
         public GameObject playerPrefab
         {
             get => m_PlayerPrefab;
@@ -486,7 +485,7 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
         public override NetworkClient StartHost()
         {
-            Debug.Log("[NetworkManager]: Starting LAN host");
+            Debug.Log("[NetworkManager]: Starting host");
 
             maxConnections = PartyParrotManager.Instance.Config.Network.Server.MaxConnections;
             NetworkClient networkClient = base.StartHost();
@@ -544,8 +543,17 @@ namespace pdxpartyparrot.Core.Network
             return base.StartHost(position, rotation, createPlayerObject, prefabHash, payloadStream);
         }
 
+        public new void StopHost()
+        {
+            Debug.Log("[NetworkManager]: Stopping host");
+
+            base.StopHost();
+        }
+
         public new SocketTasks StartServer()
         {
+            Debug.Log("[NetworkManager]: Starting server");
+
             // TODO: don't assume UnetTransport
             UnetTransport transport = (UnetTransport)NetworkConfig.NetworkTransport;
             transport.MaxConnections = PartyParrotManager.Instance.Config.Network.Server.MaxConnections;
@@ -560,8 +568,17 @@ namespace pdxpartyparrot.Core.Network
             return base.StartServer();
         }
 
+        public new void StopServer()
+        {
+            Debug.Log("[NetworkManager]: Stopping server");
+
+            base.StopServer();
+        }
+
         public new SocketTasks StartClient()
         {
+            Debug.Log("[NetworkManager]: Starting client");
+
             // TODO: don't assume UnetTransport
             UnetTransport transport = (UnetTransport)NetworkConfig.NetworkTransport;
 
@@ -575,32 +592,48 @@ namespace pdxpartyparrot.Core.Network
 
             return StartClient();
         }
+
+        public new void StopClient()
+        {
+            Debug.Log("[NetworkManager]: Stopping client");
+
+            base.StopClient();
+        }
 #else
         public NetworkClient StartHost()
         {
+            Debug.Log("[NetworkManager]: Starting host");
+
             return new NetworkClient();
         }
 
         public void StopHost()
         {
+            Debug.Log("[NetworkManager]: Stopping host");
         }
 
         public bool StartServer()
         {
+            Debug.Log("[NetworkManager]: Starting server");
+
             return true;
         }
 
         public void StopServer()
         {
+            Debug.Log("[NetworkManager]: Stopping server");
         }
 
         public NetworkClient StartClient(byte[] connectionData = null)
         {
+            Debug.Log("[NetworkManager]: Starting client");
+
             return new NetworkClient();
         }
 
         public void StopClient()
         {
+            Debug.Log("[NetworkManager]: Stopping client");
         }
 #endif
 
@@ -629,7 +662,7 @@ namespace pdxpartyparrot.Core.Network
             Debug.Log($"[NetworkManager]: Local client ready!");
 
             ClientScene.Ready(conn);
-#elif MLAPI
+#elif USE_MLAPI
             Debug.LogWarning($"TODO: local client ready");
 #endif
         }
@@ -640,7 +673,7 @@ namespace pdxpartyparrot.Core.Network
 
 #if USE_NETWORKING
             ClientScene.AddPlayer(playerControllerId);
-#elif MLAPI
+#elif USE_MLAPI
             Debug.LogWarning($"TODO: add local player {playerControllerId}");
 #else
             ServerAddPlayerEvent?.Invoke(this, new ServerAddPlayerEventArgs(new NetworkConnection((ulong)playerControllerId), playerControllerId));
@@ -658,15 +691,32 @@ namespace pdxpartyparrot.Core.Network
 
             NetworkServer.SetAllClientsNotReady();
             networkSceneName = sceneName;
-#elif MLAPI
+#elif USE_MLAPI
             Debug.LogWarning($"TODO: server change scene");
 #endif
 
             ServerChangeSceneEvent?.Invoke(this, EventArgs.Empty);
 
+            BroadcastSceneChange(sceneName);
+        }
+
+        private void BroadcastSceneChange(string sceneName)
+        {
 #if USE_NETWORKING
             StringMessage msg = new StringMessage(networkSceneName);
             NetworkServer.SendToAll(CustomMsgType.SceneChange, msg);
+#elif USE_MLAPI
+            Debug.LogWarning("TODO: broadcast scene change");
+#endif
+        }
+
+        private void BroadcastSceneChanged(string sceneName)
+        {
+#if USE_NETWORKING
+            StringMessage msg = new StringMessage(networkSceneName);
+            NetworkServer.SendToAll(CustomMsgType.SceneChanged, msg);
+#elif USE_MLAPI
+            Debug.LogWarning("TODO: broadcast scene changed");
 #endif
         }
 
@@ -681,8 +731,9 @@ namespace pdxpartyparrot.Core.Network
 #if USE_NETWORKING
             NetworkServer.SpawnObjects();
             OnServerSceneChanged(networkSceneName);
-#elif MLAPI
-            Debug.LogWarning($"TODO: server changed scene");
+#elif USE_MLAPI
+            Debug.LogWarning("TODO: server changed scene");
+            //OnServerSceneChanged(networkSceneName);
 #endif
         }
 
@@ -777,8 +828,7 @@ namespace pdxpartyparrot.Core.Network
         {
             CallbackLog($"OnServerSceneChanged({sceneName})");
 
-            StringMessage msg = new StringMessage(networkSceneName);
-            NetworkServer.SendToAll(CustomMsgType.SceneChanged, msg);
+            BroadcastSceneChanged(sceneName);
         }
 
         #endregion
@@ -893,6 +943,30 @@ namespace pdxpartyparrot.Core.Network
             CallbackLog($"Client {clientId} disconnect");
 
             ClientDisconnectEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        // server - scene loaded (server initiated)
+        public void OnServerSceneChanged(string sceneName)
+        {
+            CallbackLog($"OnServerSceneChanged({sceneName})");
+
+            BroadcastSceneChanged(sceneName);
+        }
+
+        // custom message
+        public void OnClientCustomSceneChange(string sceneName)
+        {
+            CallbackLog($"OnClientCustomSceneChange({sceneName})");
+
+            ClientSceneChangeEvent?.Invoke(this, new ClientSceneEventArgs(sceneName));
+        }
+
+        // custom message
+        public void OnClientCustomSceneChanged(string sceneName)
+        {
+            CallbackLog($"OnClientCustomSceneChanged({sceneName})");
+
+            ClientSceneChangedEvent?.Invoke(this, new ClientSceneEventArgs(sceneName));
         }
 
         #endregion
